@@ -7,25 +7,33 @@ import { isAuthenticated } from './middlewares/isAuthenticated';
 import { CreateCategoryController } from './controllers/cotegory/CreateCategoryController';
 import { ListCategoryController } from './controllers/cotegory/ListCategoryController';
 import { CreateProductsController } from './controllers/products/CreateProductsController';
+import { ListByCategoryController } from './controllers/products/ListByCategoryController';
+import { CreateOrderController } from './controllers/order/CreateOrderController';
+import { RemoveOrderController } from './controllers/order/RemoveOrderController';
 import uploadConfig from './config/multer';
 
 const router = Router();
 
 const upload = multer(uploadConfig.upload("./tmp"));
 
-// -- ROUTERS USERS --
+// -- ROUTES USERS --
 router.post('/users', new CreateUserController().handle)
 router.post('/session', new AuthUserController().handle)
 
 // call the security middleware for the router
 router.get('/me', isAuthenticated, new DetailUserController().handle);
 
-// ROUTERS CATEGORYS
+// ROUTES CATEGORYS
 router.post('/category', isAuthenticated, new CreateCategoryController().handle);
 router.get('/category', isAuthenticated, new ListCategoryController().handle);
 
-// ROUTERS PRODUCTS
+// ROUTES PRODUCTS
 router.post('/products', isAuthenticated, upload.single('file'),  new CreateProductsController().handle);
+router.get('/category/product', isAuthenticated, new ListByCategoryController().handle);
+
+//ROUTES ORDER
+router.post('/order', isAuthenticated, new CreateOrderController().handle);
+router.delete('/order', isAuthenticated, new RemoveOrderController().handle);
 
 
 export{ router };
